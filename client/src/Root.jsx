@@ -1,8 +1,14 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 const Root = () => {
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <Toaster />
+    </>
+  );
 };
 
 export default Root;

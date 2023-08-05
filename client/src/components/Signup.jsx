@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { FaUpload } from "react-icons/fa";
+import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth.js";
 
 // check sign-up form validation
 const validateForm = (values) => {
@@ -33,6 +36,8 @@ const validateForm = (values) => {
 };
 
 const Signup = () => {
+  const { isUserLoading, setUserLoading, createUserWithEP } = useAuth();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -42,7 +47,21 @@ const Signup = () => {
       userImg: null,
     },
     validate: validateForm,
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      createUserWithEP(values)
+        .then((_) =>
+          toast.success(
+            "Your account has been created successfully! You are being redirected, please wait..."
+          )
+        )
+        .then((_) => setTimeout((_) => navigate("dashboard"), 3000))
+        .catch((err) => {
+          setUserLoading(false);
+
+          if (err.message === "Firebase: Error (auth/email-already-in-use).")
+            toast.error("Email already in use!");
+        });
+    },
   });
 
   return (
@@ -166,7 +185,13 @@ const Signup = () => {
           type="submit"
           className="btn btn-sm w-full bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
         >
-          Signup
+          <span>Signup</span>
+          {isUserLoading ? (
+            <span
+              className="inline-block h-4 w-4 border-2 border-current border-r-transparent rounded-full animate-spin"
+              role="status"
+            ></span>
+          ) : null}
         </button>
       </form>
     </div>
