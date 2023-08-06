@@ -2,6 +2,8 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { IKContext } from "imagekitio-react";
 import AuthProvider from "./providers/AuthProvider.jsx";
+import LogOffRoute from "./routes/LogOffRoute.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
 import Root from "./Root.jsx";
 import Error from "./pages/Error.jsx";
 import Signin from "./pages/Signin.jsx";
@@ -19,23 +21,43 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: <Signin />,
+          element: (
+            <LogOffRoute>
+              <Signin />
+            </LogOffRoute>
+          ),
         },
         {
           path: "dashboard",
-          element: <Dashboard />,
+          element: (
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          ),
         },
         {
           path: "new-note",
-          element: <NewNote />,
+          element: (
+            <PrivateRoute>
+              <NewNote />
+            </PrivateRoute>
+          ),
         },
         {
           path: "view-note/:id",
-          element: <ViewNote />,
+          element: (
+            <PrivateRoute>
+              <ViewNote />
+            </PrivateRoute>
+          ),
         },
         {
           path: "edit-note/:id",
-          element: <EditNote />,
+          element: (
+            <PrivateRoute>
+              <EditNote />
+            </PrivateRoute>
+          ),
         },
       ],
     },

@@ -27,7 +27,9 @@ const useAxiosIns = () => {
         (res) => res,
         (err) => {
           if (err.response && [401, 403].includes(err.response.status))
-            logOut().then((_) => navigate("/"));
+            logOut()
+              .then((_) => sessionStorage.removeItem("_vu"))
+              .then((_) => navigate("/"));
 
           return Promise.reject(err);
         }

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { FaGoogle } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -8,6 +9,9 @@ import Signup from "../components/Signup.jsx";
 const Signin = () => {
   const { isUserLoading, setUserLoading, signInWithEP, signInWithGoogle } =
     useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const fromURL = location.state?.fromURL.pathname;
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -22,21 +26,32 @@ const Signin = () => {
         return false;
       }
 
-      signInWithEP(email, password).catch((err) => {
-        setUserLoading(false);
+      signInWithEP(email, password)
+        .then((_) => navigate(fromURL || "dashboard"))
+        .catch((err) => {
+          setUserLoading(false);
 
-        if (err.message === "Firebase: Error (auth/wrong-password).")
-          toast.error("Incorrect password!");
-        else if (err.message === "Firebase: Error (auth/user-not-found).")
-          toast.error("User not found!");
-      });
+          if (err.message === "Firebase: Error (auth/wrong-password).")
+            toast.error("Incorrect password!");
+          else if (err.message === "Firebase: Error (auth/user-not-found).")
+            toast.error("User not found!");
+        });
     },
   });
 
   // sign-in by google
   const handleSigninWithGoogle = (_) => {
-    signInWithGoogle().catch((_) => setUserLoading(false));
+    signInWithGoogle()
+      .then((_) => navigate(fromURL || "dashboard"))
+      .catch((_) => setUserLoading(false));
   };
+
+  useEffect((_) => {
+    if (fromURL)
+      toast.error(
+        "Only registered user can access this page. Please, login first!"
+      );
+  }, []);
 
   return (
     <section>

@@ -76,7 +76,8 @@ const AuthProvider = ({ children }) => {
         // get jwt token from server
         await axios
           .post(`${import.meta.env.VITE_API_URL}/jwt`, { _id: userCred.uid })
-          .then((response) => localStorage.setItem("_at", response.data));
+          .then((response) => localStorage.setItem("_at", response.data))
+          .then((_) => sessionStorage.setItem("_vu", JSON.stringify(true)));
       } else {
         setUser(null);
         localStorage.removeItem("_at");

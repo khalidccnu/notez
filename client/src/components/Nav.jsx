@@ -12,7 +12,10 @@ const Nav = () => {
   const [isNewCategory, setNewCategory] = useState(false);
 
   // sign-out from authentication
-  const handleLogout = (_) => logOut().then((_) => navigate("/"));
+  const handleLogout = (_) =>
+    logOut()
+      .then((_) => sessionStorage.removeItem("_vu"))
+      .then((_) => navigate("/"));
 
   return (
     <nav className={`bg-gray-100`}>
