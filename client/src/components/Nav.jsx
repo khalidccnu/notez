@@ -121,6 +121,7 @@ const Nav = () => {
                 <button
                   type="button"
                   className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                  onClick={(_) => navigate("/new-note")}
                 >
                   <FaPlus />
                   <span>Note</span>

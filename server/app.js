@@ -83,6 +83,14 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
+// self verification
+const verifySelf = async (req, res, next) => {
+  if (req.decoded._id !== req.params.identifier)
+    return res.status(403).send({ error: true, message: "Forbidden access!" });
+
+  next();
+};
+
 // mongodb config
 const mdbClient = new MongoClient(process.env.MONGODB_URI, {
   serverApi: {
@@ -95,14 +103,37 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
 (async (_) => {
   try {
     const categories = mdbClient.db("notez").collection("categories");
+    const notes = mdbClient.db("notez").collection("notes");
 
     // upload user image
     app.post("/users/upload", uploadMulter.single("userImg"), uploadToIK);
+
+    // get self categories
+    app.get(
+      "/self/categories/:identifier",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { owner_id: req.params.identifier };
+        const cursor = categories.find(query).sort({ name: 1 });
+        const result = await cursor.toArray();
+
+        res.send(result);
+      }
+    );
 
     // new category
     app.post("/categories", verifyJWT, async (req, res) => {
       const category = req.body;
       const result = await categories.insertOne(category);
+
+      res.send(result);
+    });
+
+    // new note
+    app.post("/notes", verifyJWT, async (req, res) => {
+      const note = req.body;
+      const result = await notes.insertOne(note);
 
       res.send(result);
     });

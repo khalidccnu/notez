@@ -6,6 +6,7 @@ import Root from "./Root.jsx";
 import Error from "./pages/Error.jsx";
 import Signin from "./pages/Signin.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import NewNote from "./pages/NewNote.jsx";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const App = () => {
         {
           path: "dashboard",
           element: <Dashboard />,
+        },
+        {
+          path: "new-note",
+          element: <NewNote />,
         },
       ],
     },

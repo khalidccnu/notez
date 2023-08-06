@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== Quill ===== */
+.quill {
+  @apply border rounded w-full overflow-hidden;
+}
+
+.ql-toolbar.ql-snow {
+  @apply border-0 text-center bg-gray-100;
+}
+
+.ql-container.ql-snow {
+  @apply border-0;
+}
+
+.ql-editor {
+  @apply textarea textarea-sm w-full min-h-[16rem] focus:outline-0 leading-relaxed font-josefinSans;
+}
+
+.ql-editor.ql-blank {
+  @apply before:content-[attr(data-placeholder)] before:left-3 before:right-3 before:text-[#9ca3af] before:not-italic;
+}
