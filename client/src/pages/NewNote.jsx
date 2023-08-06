@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactQuill from "react-quill";
@@ -6,18 +6,21 @@ import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
 import useAuth from "../hooks/useAuth.js";
 
+// quill modules
 const modules = {
-  toolbar: [
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
+  toolbar: {
+    container: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
     ],
-    ["link", "image"],
-  ],
+  },
 };
 
 const NewNote = () => {
@@ -25,6 +28,7 @@ const NewNote = () => {
   const axiosIns = useAxiosIns();
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);
+  const quillRef = useRef(null);
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -64,6 +68,42 @@ const NewNote = () => {
     },
   });
 
+  // handle quill contents
+  const handleQuillChange = (content, delta, source, editor) => {
+    if (source === "user") setDescription(editor.getHTML());
+  };
+
+  useEffect(() => {
+    const quill = quillRef.current.getEditor();
+
+    // custom image handler for image upload
+    const handleImageUpload = (_) => {
+      const input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("accept", "image/*");
+      input.click();
+
+      input.onchange = (_) => {
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append("noteImg", file);
+
+        axiosIns.post(`/notes/upload`, formData).then((response) => {
+          const quill = quillRef.current.getEditor();
+          const range = quill.getSelection();
+
+          quill.insertEmbed(range.index, "image", response.data.url);
+          quill.insertText(range.index + 1, "\n", "user");
+          quill.setSelection(range.index + 2);
+        });
+      };
+    };
+
+    quill.getModule("toolbar").addHandler("image", handleImageUpload);
+
+    return () => quill.off("text-change");
+  }, []);
+
   useEffect(
     (_) => {
       if (user) {
@@ -95,9 +135,17 @@ const NewNote = () => {
           <ReactQuill
             placeholder="Explain your note..."
             theme="snow"
-            modules={modules}
+            modules={{
+              toolbar: {
+                ...modules.toolbar,
+                clipboard: {
+                  matchVisual: false,
+                },
+              },
+            }}
             value={description}
-            onChange={setDescription}
+            onChange={handleQuillChange}
+            ref={quillRef}
           />
           <div className={`grid grid-cols-2 gap-3`}>
             {/* note category */}

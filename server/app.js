@@ -108,6 +108,14 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
     // upload user image
     app.post("/users/upload", uploadMulter.single("userImg"), uploadToIK);
 
+    // upload note image
+    app.post(
+      "/notes/upload",
+      verifyJWT,
+      uploadMulter.single("noteImg"),
+      uploadToIK
+    );
+
     // get self categories
     app.get(
       "/self/categories/:identifier",
