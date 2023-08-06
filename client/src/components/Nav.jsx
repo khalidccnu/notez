@@ -26,6 +26,7 @@ const Nav = () => {
               <button
                 type="button"
                 className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                onClick={() => window.new_modal.showModal()}
               >
                 <FaPlus />
                 <span>New</span>
@@ -84,6 +85,38 @@ const Nav = () => {
             </div>
           </div>
         </div>
+        {/* new content modal */}
+        <dialog id="new_modal" className="modal">
+          <div className="modal-box max-w-sm">
+            {/* modal title */}
+            <div className={`flex justify-between items-center`}>
+              <div>
+                <h3 className="font-bold text-lg">Create New</h3>
+                <p className="text-gray-500">It's quick and easy.</p>
+              </div>
+              {/* close modal */}
+              <form method="dialog">
+                <button className="btn focus:outline-0">Close</button>
+              </form>
+            </div>
+            <div className={`grid grid-cols-2 gap-2 mt-5`}>
+              <button
+                type="button"
+                className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+              >
+                <FaPlus />
+                <span>Category</span>
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+              >
+                <FaPlus />
+                <span>Note</span>
+              </button>
+            </div>
+          </div>
+        </dialog>
       </div>
     </nav>
   );
