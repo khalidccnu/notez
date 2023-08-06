@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
 import useAxiosIns from "../hooks/useAxiosIns.js";
 import useAuth from "../hooks/useAuth.js";
 
@@ -30,7 +31,14 @@ const ViewNote = () => {
             <h1 className={`font-semibold text-lg`}>{note.title}</h1>
             <div dangerouslySetInnerHTML={{ __html: note.description }} />
           </div>
-        ) : null}
+        ) : (
+          <ThreeDots
+            height="80"
+            width="80"
+            color="#770407"
+            wrapperClass="justify-center"
+          />
+        )}
       </div>
     </section>
   );

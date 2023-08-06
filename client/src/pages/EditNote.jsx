@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
+import { ThreeDots } from "react-loader-spinner";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactQuill from "react-quill";
 import toast from "react-hot-toast";
@@ -196,7 +197,14 @@ const EditNote = () => {
               </button>
             </div>
           </form>
-        ) : null}
+        ) : (
+          <ThreeDots
+            height="80"
+            width="80"
+            color="#770407"
+            wrapperClass="justify-center"
+          />
+        )}
       </div>
     </section>
   );

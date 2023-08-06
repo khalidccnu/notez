@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Nav from "./components/Nav.jsx";
 
@@ -9,6 +9,7 @@ const Root = () => {
       <Nav />
       <Outlet />
       <Toaster />
+      <ScrollRestoration />
     </>
   );
 };
