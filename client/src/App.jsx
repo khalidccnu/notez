@@ -5,6 +5,7 @@ import AuthProvider from "./providers/AuthProvider.jsx";
 import Root from "./Root.jsx";
 import Error from "./pages/Error.jsx";
 import Signin from "./pages/Signin.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -16,6 +17,10 @@ const App = () => {
         {
           path: "/",
           element: <Signin />,
+        },
+        {
+          path: "dashboard",
+          element: <Dashboard />,
         },
       ],
     },
