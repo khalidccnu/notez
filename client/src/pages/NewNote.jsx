@@ -56,6 +56,7 @@ const NewNote = () => {
         .post(`/notes`, {
           title: values.title,
           description: noteDes,
+          date: new Date(),
           category_id: values.category,
           owner_id: user.uid,
         })
@@ -120,7 +121,7 @@ const NewNote = () => {
       <div className="container">
         <form
           onSubmit={formik.handleSubmit}
-          className="form-control grid grid-cols-1 gap-4 mt-5 max-w-xl mx-auto"
+          className="form-control grid grid-cols-1 gap-4 max-w-xl mx-auto"
         >
           {/* note title */}
           <TextareaAutosize

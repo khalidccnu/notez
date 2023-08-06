@@ -138,6 +138,20 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       res.send(result);
     });
 
+    // get self notes
+    app.get(
+      "/self/notes/:identifier",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { owner_id: req.params.identifier };
+        const cursor = notes.find(query).sort({ date: -1 });
+        const result = await cursor.toArray();
+
+        res.send(result);
+      }
+    );
+
     // new note
     app.post("/notes", verifyJWT, async (req, res) => {
       const note = req.body;
