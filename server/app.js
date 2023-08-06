@@ -189,6 +189,19 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       }
     );
 
+    // delete note
+    app.delete(
+      "/self/notes/:identifier/:id",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { _id: new ObjectId(req.params.id) };
+        const result = await notes.deleteOne(query);
+
+        res.send(result);
+      }
+    );
+
     // test mongodb connection
     mdbClient
       .db("admin")

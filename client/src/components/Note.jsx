@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 
-const Note = ({ note }) => {
+const Note = ({ handleDeleteNote, note }) => {
   const { _id, title } = note;
   const navigate = useNavigate();
 
@@ -22,6 +22,7 @@ const Note = ({ note }) => {
         />
         <FaTrash
           className={`text-mordant-red hover:text-barn-red cursor-pointer`}
+          onClick={(_) => handleDeleteNote(_id)}
         />
       </span>
     </li>
