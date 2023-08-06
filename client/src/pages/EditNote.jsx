@@ -49,11 +49,7 @@ const EditNote = () => {
 
       let noteDes;
 
-      if (
-        !description ||
-        (description.indexOf("<p><br></p>") === 0 && description.length === 11)
-      )
-        noteDes = null;
+      if (!description || description === "<p><br></p>") noteDes = null;
       else noteDes = description;
 
       axiosIns
