@@ -176,6 +176,19 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       res.send(result);
     });
 
+    // update note
+    app.put(
+      "/self/notes/:identifier/:id",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { _id: new ObjectId(req.params.id) };
+        const result = await notes.updateOne(query, { $set: req.body });
+
+        res.send(result);
+      }
+    );
+
     // test mongodb connection
     mdbClient
       .db("admin")

@@ -18,6 +18,7 @@ const Note = ({ note }) => {
         />
         <FaEdit
           className={`text-mordant-red hover:text-barn-red cursor-pointer`}
+          onClick={(_) => navigate("/edit-note/" + _id)}
         />
         <FaTrash
           className={`text-mordant-red hover:text-barn-red cursor-pointer`}

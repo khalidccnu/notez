@@ -8,6 +8,7 @@ import Signin from "./pages/Signin.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import NewNote from "./pages/NewNote.jsx";
 import ViewNote from "./pages/ViewNote.jsx";
+import EditNote from "./pages/EditNote.jsx";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -31,6 +32,10 @@ const App = () => {
         {
           path: "view-note/:id",
           element: <ViewNote />,
+        },
+        {
+          path: "edit-note/:id",
+          element: <EditNote />,
         },
       ],
     },
