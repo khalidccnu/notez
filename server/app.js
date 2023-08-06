@@ -2,7 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const multer = require("multer");
 const imageKit = require("imagekit");
 const jwt = require("jsonwebtoken");
@@ -137,6 +137,22 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
 
       res.send(result);
     });
+
+    // get self note
+    app.get(
+      "/self/notes/:identifier/:id",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = {
+          _id: new ObjectId(req.params.id),
+          owner_id: req.params.identifier,
+        };
+        const result = await notes.findOne(query);
+
+        res.send(result);
+      }
+    );
 
     // get self notes
     app.get(
