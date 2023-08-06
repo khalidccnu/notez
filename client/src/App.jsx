@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { IKContext } from "imagekitio-react";
 import AuthProvider from "./providers/AuthProvider.jsx";
 import Root from "./Root.jsx";
+import Error from "./pages/Error.jsx";
 import Signin from "./pages/Signin.jsx";
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
     {
       path: "/",
       element: <Root />,
+      errorElement: <Error />,
       children: [
         {
           path: "/",
