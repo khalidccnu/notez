@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IKImage } from "imagekitio-react";
 import { FaPlus } from "react-icons/fa";
 import useAuth from "../hooks/useAuth.js";
+import NewCategory from "./NewCategory.jsx";
 
 const Nav = () => {
   const { user, logOut } = useAuth();
   const { photoURL } = user ?? {};
   const navigate = useNavigate();
+  const [isNewCategory, setNewCategory] = useState(false);
 
   // sign-out from authentication
   const handleLogout = (_) => logOut().then((_) => navigate("/"));
@@ -26,7 +28,10 @@ const Nav = () => {
               <button
                 type="button"
                 className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
-                onClick={() => window.new_modal.showModal()}
+                onClick={() => {
+                  setNewCategory(false);
+                  window.new_modal.showModal();
+                }}
               >
                 <FaPlus />
                 <span>New</span>
@@ -91,7 +96,9 @@ const Nav = () => {
             {/* modal title */}
             <div className={`flex justify-between items-center`}>
               <div>
-                <h3 className="font-bold text-lg">Create New</h3>
+                <h3 className="font-bold text-lg">
+                  {isNewCategory ? "New Category" : "Create New"}
+                </h3>
                 <p className="text-gray-500">It's quick and easy.</p>
               </div>
               {/* close modal */}
@@ -99,22 +106,27 @@ const Nav = () => {
                 <button className="btn focus:outline-0">Close</button>
               </form>
             </div>
-            <div className={`grid grid-cols-2 gap-2 mt-5`}>
-              <button
-                type="button"
-                className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
-              >
-                <FaPlus />
-                <span>Category</span>
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
-              >
-                <FaPlus />
-                <span>Note</span>
-              </button>
-            </div>
+            {isNewCategory ? (
+              <NewCategory />
+            ) : (
+              <div className={`grid grid-cols-2 gap-3 mt-5`}>
+                <button
+                  type="button"
+                  className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                  onClick={(_) => setNewCategory(true)}
+                >
+                  <FaPlus />
+                  <span>Category</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                >
+                  <FaPlus />
+                  <span>Note</span>
+                </button>
+              </div>
+            )}
           </div>
         </dialog>
       </div>

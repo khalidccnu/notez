@@ -94,10 +94,18 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
 
 (async (_) => {
   try {
-    const users = mdbClient.db("notez").collection("users");
+    const categories = mdbClient.db("notez").collection("categories");
 
     // upload user image
     app.post("/users/upload", uploadMulter.single("userImg"), uploadToIK);
+
+    // new category
+    app.post("/categories", verifyJWT, async (req, res) => {
+      const category = req.body;
+      const result = await categories.insertOne(category);
+
+      res.send(result);
+    });
 
     // test mongodb connection
     mdbClient
