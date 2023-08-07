@@ -207,6 +207,12 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
           limit = 0,
           query = {};
 
+        if (req.query.title) {
+          query = {
+            ...query,
+            title: { $regex: req.query.title, $options: "i" },
+          };
+        }
         if (req.query.category && req.query.category !== "all")
           query = { ...query, category_id: req.query.category };
 

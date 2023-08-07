@@ -19,6 +19,7 @@ const Notes = () => {
   const [categories, setCategories] = useState([]);
   const formik = useFormik({
     initialValues: {
+      title: "",
       category: "",
     },
   });
@@ -43,14 +44,14 @@ const Notes = () => {
       if (user) {
         axiosIns
           .get(
-            `/self/notes/${user.uid}?category=${formik.values.category}&count=true`
+            `/self/notes/${user.uid}?title=${formik.values.title}&category=${formik.values.category}&count=true`
           )
           .then((response) =>
             setPageCount(Math.ceil(response.data.total / notesPerPage))
           );
       }
     },
-    [formik.values.category, user, isReload]
+    [formik.values.title, formik.values.category, user, isReload]
   );
 
   useEffect(
@@ -58,7 +59,7 @@ const Notes = () => {
       if (user) {
         axiosIns
           .get(
-            `/self/notes/${user.uid}?category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
+            `/self/notes/${user.uid}?title=${formik.values.title}&category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
           )
           .then((response) => {
             setNotes(response.data);
@@ -66,7 +67,7 @@ const Notes = () => {
           });
       }
     },
-    [formik.values.category, currentPage, user, isReload]
+    [formik.values.title, formik.values.category, currentPage, user, isReload]
   );
 
   useEffect(
@@ -83,7 +84,15 @@ const Notes = () => {
   return (
     <section className={`my-10`}>
       <div className="container">
-        <div className={`w-36 ms-auto`}>
+        <div className={`grid grid-cols-2 gap-4 max-w-xl mx-auto`}>
+          <input
+            type="text"
+            placeholder="Search by title..."
+            name="title"
+            className="input input-sm input-bordered rounded-lg w-full focus:outline-0"
+            value={formik.values.title}
+            onChange={formik.handleChange}
+          />
           <select
             name="category"
             className="select select-sm select-bordered rounded-lg w-full focus:outline-0"
