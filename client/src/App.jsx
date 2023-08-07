@@ -8,6 +8,7 @@ import Root from "./Root.jsx";
 import Error from "./pages/Error.jsx";
 import Signin from "./pages/Signin.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import FavouriteNotes from "./pages/FavouriteNotes.jsx";
 import NewNote from "./pages/NewNote.jsx";
 import ViewNote from "./pages/ViewNote.jsx";
 import EditNote from "./pages/EditNote.jsx";
@@ -32,6 +33,14 @@ const App = () => {
           element: (
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "favourites",
+          element: (
+            <PrivateRoute>
+              <FavouriteNotes />
             </PrivateRoute>
           ),
         },

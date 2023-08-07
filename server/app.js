@@ -207,6 +207,7 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
           limit = 0,
           query = {};
 
+        if (req.query.favourite) query = { ...query, favourite: true };
         if (req.query.title) {
           query = {
             ...query,

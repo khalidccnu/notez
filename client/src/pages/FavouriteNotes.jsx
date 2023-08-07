@@ -5,9 +5,9 @@ import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
 import useAuth from "../hooks/useAuth.js";
-import Note from "./Note.jsx";
+import Note from "../components/Note.jsx";
 
-const Notes = () => {
+const FavouriteNote = () => {
   const { user } = useAuth();
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
@@ -30,9 +30,6 @@ const Notes = () => {
     let data;
 
     switch (method) {
-      case "add":
-        data = true;
-        break;
       case "remove":
         data = false;
     }
@@ -40,9 +37,7 @@ const Notes = () => {
     axiosIns
       .put(`/self/notes/${user.uid}/${_id}`, { favourite: data })
       .then((_) => {
-        toast.success(
-          `Note has been ${data ? "added to" : "removed from"} favourites!`
-        );
+        toast.success(`Note has been removed from favourites!`);
         setReload(!isReload);
       })
       .catch((_) => toast.error("Something went wrong!"));
@@ -68,7 +63,7 @@ const Notes = () => {
       if (user) {
         axiosIns
           .get(
-            `/self/notes/${user.uid}?title=${formik.values.title}&category=${formik.values.category}&count=true`
+            `/self/notes/${user.uid}?favourite=true&title=${formik.values.title}&category=${formik.values.category}&count=true`
           )
           .then((response) =>
             setPageCount(Math.ceil(response.data.total / notesPerPage))
@@ -83,7 +78,7 @@ const Notes = () => {
       if (user) {
         axiosIns
           .get(
-            `/self/notes/${user.uid}?title=${formik.values.title}&category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
+            `/self/notes/${user.uid}?favourite=true&title=${formik.values.title}&category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
           )
           .then((response) => {
             setNotes(response.data);
@@ -183,7 +178,7 @@ const Notes = () => {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
-              <span>You have not any note!</span>
+              <span>You have not any favourite note!</span>
             </div>
           )
         ) : (
@@ -199,4 +194,4 @@ const Notes = () => {
   );
 };
 
-export default Notes;
+export default FavouriteNote;
