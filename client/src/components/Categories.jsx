@@ -87,25 +87,27 @@ const Categories = () => {
                   />
                 ))}
               </ul>
-              <div className="flex justify-center mt-5">
-                <ReactPaginate
-                  containerClassName="join"
-                  pageLinkClassName="join-item btn btn-sm"
-                  activeLinkClassName="btn-active"
-                  disabledLinkClassName="btn-disabled"
-                  previousLinkClassName="join-item btn btn-sm"
-                  nextLinkClassName="join-item btn btn-sm"
-                  breakLinkClassName="join-item btn btn-sm"
-                  previousLabel="<"
-                  nextLabel=">"
-                  breakLabel="..."
-                  pageCount={pageCount}
-                  pageRangeDisplayed={2}
-                  marginPagesDisplayed={2}
-                  onPageChange={handlePageClick}
-                  renderOnZeroPageCount={null}
-                />
-              </div>
+              {pageCount > 1 ? (
+                <div className="flex justify-center mt-5">
+                  <ReactPaginate
+                    containerClassName="join"
+                    pageLinkClassName="join-item btn btn-sm"
+                    activeLinkClassName="btn-active"
+                    disabledLinkClassName="btn-disabled"
+                    previousLinkClassName="join-item btn btn-sm"
+                    nextLinkClassName="join-item btn btn-sm"
+                    breakLinkClassName="join-item btn btn-sm"
+                    previousLabel="<"
+                    nextLabel=">"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    pageRangeDisplayed={2}
+                    marginPagesDisplayed={2}
+                    onPageChange={handlePageClick}
+                    renderOnZeroPageCount={null}
+                  />
+                </div>
+              ) : null}
               {/* edit modal */}
               <dialog id="edit_modal" className="modal">
                 <div className="modal-box max-w-sm">
@@ -125,7 +127,7 @@ const Categories = () => {
               </dialog>
             </>
           ) : (
-            <div className="alert max-w-xl mx-auto">
+            <div className="alert max-w-xl mx-auto rounded-lg">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

@@ -204,8 +204,13 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       verifySelf,
       async (req, res) => {
         let skip = 0,
-          limit = 0;
-        const query = { owner_id: req.params.identifier };
+          limit = 0,
+          query = {};
+
+        if (req.query.category && req.query.category !== "all")
+          query = { ...query, category_id: req.query.category };
+
+        query = { ...query, owner_id: req.params.identifier };
 
         if (req.query.count) {
           const countResult = await notes.countDocuments(query);

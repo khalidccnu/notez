@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { useFormik } from "formik";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
@@ -15,6 +16,12 @@ const Notes = () => {
   const [notesPerPage] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const formik = useFormik({
+    initialValues: {
+      category: "",
+    },
+  });
 
   // delete note
   const handleDeleteNote = (id) => {
@@ -35,13 +42,15 @@ const Notes = () => {
     (_) => {
       if (user) {
         axiosIns
-          .get(`/self/notes/${user.uid}?count=true`)
+          .get(
+            `/self/notes/${user.uid}?category=${formik.values.category}&count=true`
+          )
           .then((response) =>
             setPageCount(Math.ceil(response.data.total / notesPerPage))
           );
       }
     },
-    [user, isReload]
+    [formik.values.category, user, isReload]
   );
 
   useEffect(
@@ -49,7 +58,7 @@ const Notes = () => {
       if (user) {
         axiosIns
           .get(
-            `/self/notes/${user.uid}?page=${currentPage}&limit=${notesPerPage}`
+            `/self/notes/${user.uid}?category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
           )
           .then((response) => {
             setNotes(response.data);
@@ -57,16 +66,44 @@ const Notes = () => {
           });
       }
     },
-    [currentPage, user, isReload]
+    [formik.values.category, currentPage, user, isReload]
+  );
+
+  useEffect(
+    (_) => {
+      if (user) {
+        axiosIns
+          .get(`/self/categories/${user.uid}`)
+          .then((response) => setCategories(response.data));
+      }
+    },
+    [user]
   );
 
   return (
     <section className={`my-10`}>
       <div className="container">
+        <div className={`w-36 ms-auto`}>
+          <select
+            name="category"
+            className="select select-sm select-bordered rounded-lg w-full focus:outline-0"
+            value={formik.values.category}
+            onChange={formik.handleChange}
+          >
+            <option value="all" selected>
+              All
+            </option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
         {!isLoading ? (
           notes.length ? (
             <>
-              <ul className={`grid grid-cols-1 gap-4 max-w-xl mx-auto`}>
+              <ul className={`grid grid-cols-1 gap-4 max-w-xl mx-auto mt-4`}>
                 {notes.map((note) => (
                   <Note
                     key={note._id}
@@ -75,28 +112,30 @@ const Notes = () => {
                   />
                 ))}
               </ul>
-              <div className="flex justify-center mt-5">
-                <ReactPaginate
-                  containerClassName="join"
-                  pageLinkClassName="join-item btn btn-sm"
-                  activeLinkClassName="btn-active"
-                  disabledLinkClassName="btn-disabled"
-                  previousLinkClassName="join-item btn btn-sm"
-                  nextLinkClassName="join-item btn btn-sm"
-                  breakLinkClassName="join-item btn btn-sm"
-                  previousLabel="<"
-                  nextLabel=">"
-                  breakLabel="..."
-                  pageCount={pageCount}
-                  pageRangeDisplayed={2}
-                  marginPagesDisplayed={2}
-                  onPageChange={handlePageClick}
-                  renderOnZeroPageCount={null}
-                />
-              </div>
+              {pageCount > 1 ? (
+                <div className="flex justify-center mt-5">
+                  <ReactPaginate
+                    containerClassName="join"
+                    pageLinkClassName="join-item btn btn-sm"
+                    activeLinkClassName="btn-active"
+                    disabledLinkClassName="btn-disabled"
+                    previousLinkClassName="join-item btn btn-sm"
+                    nextLinkClassName="join-item btn btn-sm"
+                    breakLinkClassName="join-item btn btn-sm"
+                    previousLabel="<"
+                    nextLabel=">"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    pageRangeDisplayed={2}
+                    marginPagesDisplayed={2}
+                    onPageChange={handlePageClick}
+                    renderOnZeroPageCount={null}
+                  />
+                </div>
+              ) : null}
             </>
           ) : (
-            <div className="alert max-w-xl mx-auto">
+            <div className="alert max-w-xl mx-auto mt-4 rounded-lg">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
