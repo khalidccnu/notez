@@ -122,8 +122,25 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       verifyJWT,
       verifySelf,
       async (req, res) => {
+        let skip = 0,
+          limit = 0;
         const query = { owner_id: req.params.identifier };
-        const cursor = categories.find(query).sort({ name: 1 });
+
+        if (req.query.count) {
+          const countResult = await categories.countDocuments(query);
+
+          return res.send({ total: countResult });
+        } else if (req.query.page && req.query.limit) {
+          let page = req.query.page;
+          limit = +req.query.limit;
+          skip = page * limit;
+        }
+
+        const cursor = categories
+          .find(query)
+          .sort({ name: 1 })
+          .skip(skip)
+          .limit(limit);
         const result = await cursor.toArray();
 
         res.send(result);
@@ -186,8 +203,25 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       verifyJWT,
       verifySelf,
       async (req, res) => {
+        let skip = 0,
+          limit = 0;
         const query = { owner_id: req.params.identifier };
-        const cursor = notes.find(query).sort({ date: -1 });
+
+        if (req.query.count) {
+          const countResult = await notes.countDocuments(query);
+
+          return res.send({ total: countResult });
+        } else if (req.query.page && req.query.limit) {
+          let page = req.query.page;
+          limit = +req.query.limit;
+          skip = page * limit;
+        }
+
+        const cursor = notes
+          .find(query)
+          .sort({ date: -1 })
+          .skip(skip)
+          .limit(limit);
         const result = await cursor.toArray();
 
         res.send(result);

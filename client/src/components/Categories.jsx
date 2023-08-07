@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
 import useAuth from "../hooks/useAuth.js";
@@ -13,6 +14,9 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [isReload, setReload] = useState(false);
   const [editCategory, setEditCategory] = useState(null);
+  const [categoriesPerPage] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
   // delete category
   const handleDeleteCategory = (id) => {
@@ -25,6 +29,10 @@ const Categories = () => {
       .catch((_) => toast.error("Something went wrong!"));
   };
 
+  const handlePageClick = ({ selected: page }) => {
+    setCurrentPage(page);
+  };
+
   useEffect(
     (_) => {
       if (editCategory) window.edit_modal.showModal();
@@ -35,13 +43,30 @@ const Categories = () => {
   useEffect(
     (_) => {
       if (user) {
-        axiosIns.get(`/self/categories/${user.uid}`).then((response) => {
-          setCategories(response.data);
-          setLoading(false);
-        });
+        axiosIns
+          .get(`/self/categories/${user.uid}?count=true`)
+          .then((response) =>
+            setPageCount(Math.ceil(response.data.total / categoriesPerPage))
+          );
       }
     },
     [user, isReload]
+  );
+
+  useEffect(
+    (_) => {
+      if (user) {
+        axiosIns
+          .get(
+            `/self/categories/${user.uid}?page=${currentPage}&limit=${categoriesPerPage}`
+          )
+          .then((response) => {
+            setCategories(response.data);
+            setLoading(false);
+          });
+      }
+    },
+    [currentPage, user, isReload]
   );
 
   return (
@@ -62,6 +87,25 @@ const Categories = () => {
                   />
                 ))}
               </ul>
+              <div className="flex justify-center mt-5">
+                <ReactPaginate
+                  containerClassName="join"
+                  pageLinkClassName="join-item btn btn-sm"
+                  activeLinkClassName="btn-active"
+                  disabledLinkClassName="btn-disabled"
+                  previousLinkClassName="join-item btn btn-sm"
+                  nextLinkClassName="join-item btn btn-sm"
+                  breakLinkClassName="join-item btn btn-sm"
+                  previousLabel="<"
+                  nextLabel=">"
+                  breakLabel="..."
+                  pageCount={pageCount}
+                  pageRangeDisplayed={2}
+                  marginPagesDisplayed={2}
+                  onPageChange={handlePageClick}
+                  renderOnZeroPageCount={null}
+                />
+              </div>
               {/* edit modal */}
               <dialog id="edit_modal" className="modal">
                 <div className="modal-box max-w-sm">
