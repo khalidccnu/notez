@@ -5,6 +5,7 @@ import { ThreeDots } from "react-loader-spinner";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactQuill from "react-quill";
 import toast from "react-hot-toast";
+import { MdSync, MdSyncDisabled } from "react-icons/md";
 import useAxiosIns from "../hooks/useAxiosIns.js";
 import useAuth from "../hooks/useAuth.js";
 
@@ -30,6 +31,7 @@ const EditNote = () => {
   const { user } = useAuth();
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
+  const [isSync, setSync] = useState(true);
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);
   const quillRef = useRef(null);
@@ -62,6 +64,22 @@ const EditNote = () => {
         .catch((_) => toast.error("Something went wrong!"));
     },
   });
+
+  const handleSync = (_) => {
+    toast.success(`Auto sync is ${isSync ? "off" : "on"}!`);
+
+    setSync(!isSync);
+  };
+
+  // auto save to db
+  const saveToDB = async (_) => {
+    return new Promise((resolve) => {
+      setTimeout((_) => {
+        formik.submitForm();
+        resolve();
+      }, 1000);
+    });
+  };
 
   // handle quill contents
   const handleQuillChange = (content, delta, source, editor) => {
@@ -129,70 +147,95 @@ const EditNote = () => {
     [user]
   );
 
+  useEffect(() => {
+    if (isSync) {
+      const autoSave = setTimeout(saveToDB, 3000);
+
+      return () => clearTimeout(autoSave);
+    }
+  }, [formik.values, description, isSync]);
+
   return (
     <section className={`my-10`}>
       <div className="container">
         {!isLoading ? (
-          <form
-            onSubmit={formik.handleSubmit}
-            className="form-control grid grid-cols-1 gap-4 max-w-xl mx-auto"
-          >
-            {/* note title */}
-            <TextareaAutosize
-              placeholder="Write your note title..."
-              name="title"
-              className={`textarea textarea-sm textarea-bordered rounded w-full min-h-0 focus:outline-0 resize-none leading-relaxed`}
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              autoFocus={true}
-            />
-            {/* note description */}
-            <ReactQuill
-              placeholder="Explain your note..."
-              theme="snow"
-              modules={{
-                toolbar: {
-                  ...modules.toolbar,
-                  clipboard: {
-                    matchVisual: false,
-                  },
-                },
-              }}
-              value={description}
-              onChange={handleQuillChange}
-              ref={quillRef}
-            />
-            <div className={`grid grid-cols-2 gap-3`}>
-              {/* note category */}
-              <select
-                name="category"
-                className="select select-sm select-bordered rounded w-full focus:outline-0"
-                value={formik.values.category}
-                onChange={formik.handleChange}
-              >
-                {categories.map((category) => (
-                  <option
-                    key={category._id}
-                    value={category._id}
-                    selected={
-                      formik.values.category === category._id
-                        ? "selected"
-                        : null
-                    }
-                  >
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              {/* note insert button */}
+          <>
+            <div className={`max-w-xl mx-auto text-end`}>
               <button
-                type="submit"
-                className="btn btn-sm w-full bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                type="button"
+                className="btn btn-sm bg-black-bean hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                onClick={handleSync}
               >
-                Update
+                {isSync ? (
+                  <span className={`animate-pulse`}>
+                    <MdSync />
+                  </span>
+                ) : (
+                  <MdSyncDisabled />
+                )}
               </button>
             </div>
-          </form>
+            <form
+              onSubmit={formik.handleSubmit}
+              className="form-control grid grid-cols-1 gap-4 max-w-xl mx-auto mt-4"
+            >
+              {/* note title */}
+              <TextareaAutosize
+                placeholder="Write your note title..."
+                name="title"
+                className={`textarea textarea-sm textarea-bordered rounded w-full min-h-0 focus:outline-0 resize-none leading-relaxed`}
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                autoFocus={true}
+              />
+              {/* note description */}
+              <ReactQuill
+                placeholder="Explain your note..."
+                theme="snow"
+                modules={{
+                  toolbar: {
+                    ...modules.toolbar,
+                    clipboard: {
+                      matchVisual: false,
+                    },
+                  },
+                }}
+                value={description}
+                onChange={handleQuillChange}
+                ref={quillRef}
+              />
+              <div className={`grid grid-cols-2 gap-3`}>
+                {/* note category */}
+                <select
+                  name="category"
+                  className="select select-sm select-bordered rounded w-full focus:outline-0"
+                  value={formik.values.category}
+                  onChange={formik.handleChange}
+                >
+                  {categories.map((category) => (
+                    <option
+                      key={category._id}
+                      value={category._id}
+                      selected={
+                        formik.values.category === category._id
+                          ? "selected"
+                          : null
+                      }
+                    >
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {/* note insert button */}
+                <button
+                  type="submit"
+                  className="btn btn-sm w-full bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </>
         ) : (
           <ThreeDots
             height="80"
