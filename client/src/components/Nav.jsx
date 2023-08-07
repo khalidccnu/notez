@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IKImage } from "imagekitio-react";
 import { FaPlus } from "react-icons/fa";
@@ -9,6 +9,7 @@ const Nav = () => {
   const { user, logOut } = useAuth();
   const { photoURL } = user ?? {};
   const navigate = useNavigate();
+  const closeModalRef = useRef(null);
   const [isNewCategory, setNewCategory] = useState(false);
 
   // sign-out from authentication
@@ -106,7 +107,9 @@ const Nav = () => {
               </div>
               {/* close modal */}
               <form method="dialog">
-                <button className="btn focus:outline-0">Close</button>
+                <button className="btn focus:outline-0" ref={closeModalRef}>
+                  Close
+                </button>
               </form>
             </div>
             {isNewCategory ? (
@@ -124,7 +127,10 @@ const Nav = () => {
                 <button
                   type="button"
                   className="btn btn-sm bg-barn-red hover:bg-transparent text-white hover:text-barn-red !border-barn-red rounded normal-case"
-                  onClick={(_) => navigate("/new-note")}
+                  onClick={(_) => {
+                    closeModalRef.current.click();
+                    navigate("/new-note");
+                  }}
                 >
                   <FaPlus />
                   <span>Note</span>

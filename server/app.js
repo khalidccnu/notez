@@ -138,6 +138,32 @@ const mdbClient = new MongoClient(process.env.MONGODB_URI, {
       res.send(result);
     });
 
+    // update category
+    app.put(
+      "/self/categories/:identifier/:id",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { _id: new ObjectId(req.params.id) };
+        const result = await categories.updateOne(query, { $set: req.body });
+
+        res.send(result);
+      }
+    );
+
+    // delete category
+    app.delete(
+      "/self/categories/:identifier/:id",
+      verifyJWT,
+      verifySelf,
+      async (req, res) => {
+        const query = { _id: new ObjectId(req.params.id) };
+        const result = await categories.deleteOne(query);
+
+        res.send(result);
+      }
+    );
+
     // get self note
     app.get(
       "/self/notes/:identifier/:id",
