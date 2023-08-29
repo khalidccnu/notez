@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { ThreeDots } from "react-loader-spinner";
 import TextareaAutosize from "react-textarea-autosize";
@@ -7,7 +8,6 @@ import ReactQuill from "react-quill";
 import toast from "react-hot-toast";
 import { MdSync, MdSyncDisabled } from "react-icons/md";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 
 // quill modules
 const modules = {
@@ -28,7 +28,7 @@ const modules = {
 
 const EditNote = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
   const [isSync, setSync] = useState(true);
@@ -40,7 +40,7 @@ const EditNote = () => {
       title: "",
       category: "",
     },
-    onSubmit: (values, formikHelpers) => {
+    onSubmit: (values) => {
       if (!values.title) {
         toast.error("Note title is required!");
         return false;

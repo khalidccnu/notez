@@ -1,7 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
 import { IKContext } from "imagekitio-react";
-import AuthProvider from "./providers/AuthProvider.jsx";
+import store from "./redux/store.js";
 import LogOffRoute from "./routes/LogOffRoute.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import Root from "./Root.jsx";
@@ -73,15 +74,15 @@ const App = () => {
   ]);
 
   return (
-    // user authentication provider
-    <AuthProvider>
+    // redux store provider
+    <Provider store={store}>
       {/* imagekit authentication provider */}
       <IKContext
         urlEndpoint={`https://ik.imagekit.io/${import.meta.env.VITE_IK_ID}`}
       >
         <RouterProvider router={router} />
       </IKContext>
-    </AuthProvider>
+    </Provider>
   );
 };
 

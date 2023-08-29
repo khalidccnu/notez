@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { IKImage } from "imagekitio-react";
 import { FaPlus } from "react-icons/fa";
-import useAuth from "../hooks/useAuth.js";
+import { logOut } from "../redux/auth/authThunks.js";
 import NewCategory from "./NewCategory.jsx";
 
 const Nav = () => {
-  const { user, logOut } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
+  const dispatch = useDispatch();
   const { photoURL } = user ?? {};
   const navigate = useNavigate();
   const closeModalRef = useRef(null);
@@ -14,7 +16,7 @@ const Nav = () => {
 
   // sign-out from authentication
   const handleLogout = (_) =>
-    logOut()
+    dispatch(logOut())
       .then((_) => sessionStorage.removeItem("_vu"))
       .then((_) => navigate("/"));
 

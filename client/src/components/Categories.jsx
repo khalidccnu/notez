@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 import Category from "./Category.jsx";
 import EditCategory from "./EditCategory.jsx";
 
 const Categories = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);

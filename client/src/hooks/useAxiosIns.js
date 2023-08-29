@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
-import useAuth from "./useAuth.js";
+import { logOut } from "../redux/auth/authThunks.js";
 
 const axiosIns = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
 const useAxiosIns = () => {
-  const { logOut } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(
@@ -27,7 +28,7 @@ const useAxiosIns = () => {
         (res) => res,
         (err) => {
           if (err.response && [401, 403].includes(err.response.status))
-            logOut()
+            dispatch(logOut())
               .then((_) => sessionStorage.removeItem("_vu"))
               .then((_) => navigate("/"));
 

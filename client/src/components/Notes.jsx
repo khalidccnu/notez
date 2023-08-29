@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import { useFormik } from "formik";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
+import { setLoading } from "../redux/notes/notesSlice.js";
+import { fetchNotes } from "../redux/notes/notesThunk.js";
 import Note from "./Note.jsx";
 
 const Notes = () => {
-  const { user } = useAuth();
   const axiosIns = useAxiosIns();
-  const [isLoading, setLoading] = useState(true);
-  const [notes, setNotes] = useState([]);
+  const { user } = useSelector((state) => state.authSlice);
+  const { isLoading, notes } = useSelector((state) => state.notesSlice);
+  const dispatch = useDispatch();
   const [isReload, setReload] = useState(false);
   const [notesPerPage] = useState(10);
   const [pageCount, setPageCount] = useState(0);
@@ -81,14 +83,15 @@ const Notes = () => {
   useEffect(
     (_) => {
       if (user) {
-        axiosIns
-          .get(
-            `/self/notes/${user.uid}?title=${formik.values.title}&category=${formik.values.category}&page=${currentPage}&limit=${notesPerPage}`
-          )
-          .then((response) => {
-            setNotes(response.data);
-            setLoading(false);
-          });
+        dispatch(
+          fetchNotes({
+            userId: user.uid,
+            title: formik.values.title,
+            category: formik.values.category,
+            currentPage,
+            notesPerPage,
+          })
+        ).then(() => dispatch(setLoading(false)));
       }
     },
     [formik.values.title, formik.values.category, currentPage, user, isReload]

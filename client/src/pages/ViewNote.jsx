@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 
 const ViewNote = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
   const [note, setNote] = useState({});

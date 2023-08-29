@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactQuill from "react-quill";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 
 // quill modules
 const modules = {
@@ -24,7 +24,7 @@ const modules = {
 };
 
 const NewNote = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 
 // check new category form validation
 const validateForm = (values) => {
@@ -16,7 +16,7 @@ const validateForm = (values) => {
 };
 
 const NewCategory = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [status, setStatus] = useState(null);
   const formik = useFormik({

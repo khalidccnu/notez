@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { FaUpload } from "react-icons/fa";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth.js";
+import { setUserLoading } from "../redux/auth/authSlice.js";
+import { createUserWithEP } from "../redux/auth/authThunks.js";
 
 // check sign-up form validation
 const validateForm = (values) => {
@@ -36,7 +38,8 @@ const validateForm = (values) => {
 };
 
 const Signup = () => {
-  const { isUserLoading, setUserLoading, createUserWithEP } = useAuth();
+  const { isUserLoading } = useSelector((state) => state.authSlice);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -48,7 +51,7 @@ const Signup = () => {
     },
     validate: validateForm,
     onSubmit: (values) => {
-      createUserWithEP(values)
+      dispatch(createUserWithEP(values))
         .then((_) =>
           toast.success(
             "Your account has been created successfully! You are being redirected, please wait..."
@@ -56,7 +59,7 @@ const Signup = () => {
         )
         .then((_) => setTimeout((_) => navigate("dashboard"), 3000))
         .catch((err) => {
-          setUserLoading(false);
+          dispatch(setUserLoading(false));
 
           if (err.message === "Firebase: Error (auth/email-already-in-use).")
             toast.error("Email already in use!");

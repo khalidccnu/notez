@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 
 // check new category form validation
 const validateForm = (values) => {
@@ -17,7 +17,7 @@ const validateForm = (values) => {
 
 const EditCategory = ({ editCategory }) => {
   const { _id, name } = editCategory ?? {};
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [status, setStatus] = useState(null);
   const formik = useFormik({
@@ -25,7 +25,7 @@ const EditCategory = ({ editCategory }) => {
       name: "",
     },
     validate: validateForm,
-    onSubmit: async (values, formikHelpers) => {
+    onSubmit: async (values) => {
       await axiosIns
         .put(`/self/categories/${user.uid}/${_id}`, {
           name: values.name,

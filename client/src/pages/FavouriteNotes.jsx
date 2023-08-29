@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import { useFormik } from "formik";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import useAxiosIns from "../hooks/useAxiosIns.js";
-import useAuth from "../hooks/useAuth.js";
 import Note from "../components/Note.jsx";
 
 const FavouriteNote = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.authSlice);
   const axiosIns = useAxiosIns();
   const [isLoading, setLoading] = useState(true);
   const [notes, setNotes] = useState([]);

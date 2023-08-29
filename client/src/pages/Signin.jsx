@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { FaGoogle } from "react-icons/fa";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth.js";
+import { setUserLoading } from "../redux/auth/authSlice.js";
+import { signInWithEP, signInWithGoogle } from "../redux/auth/authThunks.js";
 import Signup from "../components/Signup.jsx";
 
 const Signin = () => {
-  const { isUserLoading, setUserLoading, signInWithEP, signInWithGoogle } =
-    useAuth();
+  const { isUserLoading } = useSelector((state) => state.authSlice);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const fromURL = location.state?.fromURL.pathname;
@@ -26,10 +28,10 @@ const Signin = () => {
         return false;
       }
 
-      signInWithEP(email, password)
+      dispatch(signInWithEP(email, password))
         .then((_) => navigate(fromURL || "dashboard"))
         .catch((err) => {
-          setUserLoading(false);
+          dispatch(setUserLoading(false));
 
           if (err.message === "Firebase: Error (auth/wrong-password).")
             toast.error("Incorrect password!");
@@ -41,9 +43,9 @@ const Signin = () => {
 
   // sign-in by google
   const handleSigninWithGoogle = (_) => {
-    signInWithGoogle()
+    dispatch(signInWithGoogle())
       .then((_) => navigate(fromURL || "dashboard"))
-      .catch((_) => setUserLoading(false));
+      .catch((_) => dispatch(setUserLoading(false)));
   };
 
   useEffect((_) => {
