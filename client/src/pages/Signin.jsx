@@ -28,24 +28,32 @@ const Signin = () => {
         return false;
       }
 
-      dispatch(signInWithEP(email, password))
-        .then((_) => navigate(fromURL || "dashboard"))
-        .catch((err) => {
+      dispatch(signInWithEP({ email, password })).then((response) => {
+        if (response.error) {
           dispatch(setUserLoading(false));
 
-          if (err.message === "Firebase: Error (auth/wrong-password).")
+          if (
+            response.error.message === "Firebase: Error (auth/wrong-password)."
+          ) {
             toast.error("Incorrect password!");
-          else if (err.message === "Firebase: Error (auth/user-not-found).")
+          } else if (
+            response.error.message === "Firebase: Error (auth/user-not-found)."
+          ) {
             toast.error("User not found!");
-        });
+          }
+        } else {
+          navigate(fromURL || "dashboard");
+        }
+      });
     },
   });
 
   // sign-in by google
   const handleSigninWithGoogle = (_) => {
-    dispatch(signInWithGoogle())
-      .then((_) => navigate(fromURL || "dashboard"))
-      .catch((_) => dispatch(setUserLoading(false)));
+    dispatch(signInWithGoogle()).then((response) => {
+      if (response.error) dispatch(setUserLoading(false));
+      else navigate(fromURL || "dashboard");
+    });
   };
 
   useEffect((_) => {

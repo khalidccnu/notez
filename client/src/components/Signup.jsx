@@ -51,19 +51,23 @@ const Signup = () => {
     },
     validate: validateForm,
     onSubmit: (values) => {
-      dispatch(createUserWithEP(values))
-        .then((_) =>
-          toast.success(
-            "Your account has been created successfully! You are being redirected, please wait..."
-          )
-        )
-        .then((_) => setTimeout((_) => navigate("dashboard"), 3000))
-        .catch((err) => {
+      dispatch(createUserWithEP({ values })).then((response) => {
+        if (response.error) {
           dispatch(setUserLoading(false));
 
-          if (err.message === "Firebase: Error (auth/email-already-in-use).")
+          if (
+            response.error.message ===
+            "Firebase: Error (auth/email-already-in-use)."
+          ) {
             toast.error("Email already in use!");
-        });
+          }
+        } else {
+          toast.success(
+            "Your account has been created successfully! You are being redirected, please wait..."
+          );
+          setTimeout((_) => navigate("dashboard"), 3000);
+        }
+      });
     },
   });
 

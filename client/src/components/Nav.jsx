@@ -46,12 +46,20 @@ const Nav = () => {
             {/* nav links */}
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <figure className="w-10 rounded-full overflow-hidden">
-                  <IKImage
-                    path={photoURL}
-                    className="w-full h-full object-cover"
-                    transformation={[{ q: "40" }]}
-                  />
+                <figure className="w-10 h-10 rounded-full overflow-hidden">
+                  {photoURL?.includes("https://") ? (
+                    <img
+                      src={photoURL}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <IKImage
+                      path={photoURL}
+                      className="w-full h-full object-cover"
+                      transformation={[{ q: "40" }]}
+                    />
+                  )}
                 </figure>
               </label>
               <ul
