@@ -13,4 +13,4 @@
 - Users can filter their notes easily by title and category.
 - Auto save and user specific sync implemented in update note.
 
-###### [Live](https://notez-sk.netlify.app)
+###### [Live](https://noteez.netlify.app)
